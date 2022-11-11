@@ -1,27 +1,28 @@
 {
-  "name": "nearley",
-  "version": "1.0.0",
-  "main": "csscolor.js",
-  "directories": {
-    "example": "examples",
-    "test": "test"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bobchm/nearley-test.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/bobchm/nearley-test/issues"
-  },
-  "homepage": "https://github.com/bobchm/nearley-test#readme",
-  "description": "",
-  "dependencies": {
-    "nearley": "^2.20.1"
-  }
+    "name": "nearley",
+    "version": "1.0.0",
+    "main": "canvas/run-canvas.js",
+    "type": "module",
+    "directories": {
+        "example": "examples",
+        "test": "test"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/bobchm/nearley-test.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/bobchm/nearley-test/issues"
+    },
+    "homepage": "https://github.com/bobchm/nearley-test#readme",
+    "description": "",
+    "dependencies": {
+        "nearley": "^2.20.1"
+    }
 }

@@ -9,8 +9,8 @@
             "request": "launch",
             "name": "Launch Program",
             "skipFiles": ["<node_internals>/**"],
-            "program": "${workspaceFolder}/test.js",
-            "args": ["./fun-lang.js", "./fun.test"]
+            "program": "${workspaceFolder}/canvas/run-canvas.js",
+            "args": ["./canvas/test.cnv"]
         }
     ]
 }

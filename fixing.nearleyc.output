@@ -1,0 +1,5 @@
+1. Remove (or comment out) outer wrapping function.
+2. Remove the part at the bottom that does 'if module !== undefined ...
+3. Remove (or comment out) the line near the top: const moo = require("moo");
+4. add import moo from "moo"; at the top
+5. add "export default grammar; at the end of the file
