@@ -10,7 +10,7 @@
             "name": "Launch Program",
             "skipFiles": ["<node_internals>/**"],
             "program": "${workspaceFolder}/test.js",
-            "args": ["./wiki.js", "./wiki.test"]
+            "args": ["./fun-lang.js", "./fun.test"]
         }
     ]
 }
