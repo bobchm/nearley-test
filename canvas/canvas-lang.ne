@@ -115,7 +115,7 @@ top_level_statements
 
 top_level_statement
     -> function_definition   {% id %}
-    |  executable_statements {% id %}
+    |  executable_statements {% d => d[0][0] %}
     |  line_comment     {% id %}
 
 function_definition

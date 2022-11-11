@@ -1,7 +1,6 @@
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 import moo from "moo";
-
 function id(x) {
     return x[0];
 }
@@ -92,11 +91,7 @@ function convertTokenId(data) {
 var grammar = {
     Lexer: lexer,
     ParserRules: [
-        {
-            name: "input",
-            symbols: ["top_level_statements"],
-            postprocess: id,
-        },
+        { name: "input", symbols: ["top_level_statements"], postprocess: id },
         {
             name: "top_level_statements",
             symbols: ["top_level_statement"],
@@ -131,7 +126,7 @@ var grammar = {
         {
             name: "top_level_statement",
             symbols: ["executable_statements"],
-            postprocess: id,
+            postprocess: (d) => d[0][0],
         },
         {
             name: "top_level_statement",
@@ -795,10 +790,7 @@ var grammar = {
             symbols: [lexer.has("ws") ? { type: "ws" } : ws],
         },
         { name: "multi_line_ws_char", symbols: [{ literal: "\n" }] },
-        {
-            name: "__$ebnf$1",
-            symbols: [lexer.has("ws") ? { type: "ws" } : ws],
-        },
+        { name: "__$ebnf$1", symbols: [lexer.has("ws") ? { type: "ws" } : ws] },
         {
             name: "__$ebnf$1",
             symbols: ["__$ebnf$1", lexer.has("ws") ? { type: "ws" } : ws],

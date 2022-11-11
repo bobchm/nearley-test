@@ -1,9 +1,13 @@
 import fs from "fs";
 import nearley from "nearley";
 import grammar from "./canvas-lang.js";
-// const fs = require("fs");
-// const nearley = require("nearley");
-// const grammar = require("./canvas-lang.js");
+import { initBaseStack, addBuiltInFunction, execute } from "./canvas-exec.js";
+
+var builtInFunctions = [{ name: "print", function: printCanvas, nArgs: 1 }];
+
+function printCanvas(output) {
+    console.log(output);
+}
 
 function getCanvasFile() {
     if (process.argv.length !== 3) {
@@ -37,6 +41,11 @@ function parseCanvas(source) {
 
 function runCanvas(ast) {
     console.log(JSON.stringify(ast, undefined, 2));
+    initBaseStack();
+    for (let i = 0; i < builtInFunctions.length; i++) {
+        addBuiltInFunction(builtInFunctions[i]);
+    }
+    execute(ast);
 }
 
 function main() {
