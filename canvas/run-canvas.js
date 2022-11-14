@@ -1,9 +1,9 @@
 import fs from "fs";
 import nearley from "nearley";
 import grammar from "./canvas-lang.js";
-import { initBaseStack, addBuiltInFunction, execute } from "./canvas-exec.js";
+import { pushStackFrame, addBuiltInFunction, execute } from "./canvas-exec.js";
 
-var builtInFunctions = [{ name: "print", function: printCanvas, nArgs: 1 }];
+var builtInFunctions = [{ name: "print", function: printCanvas, nParams: 1 }];
 
 function printCanvas(output) {
     console.log(output);
@@ -41,7 +41,9 @@ function parseCanvas(source) {
 
 function runCanvas(ast) {
     console.log(JSON.stringify(ast, undefined, 2));
-    initBaseStack();
+
+    // push a stack frame for built-in functions
+    pushStackFrame("_base)", null, null);
     for (let i = 0; i < builtInFunctions.length; i++) {
         addBuiltInFunction(builtInFunctions[i]);
     }
