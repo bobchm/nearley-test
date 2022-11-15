@@ -39,6 +39,7 @@ function parseCanvas(source) {
         ast = parser.results[0];
     } catch (err) {
         console.error("Parse error: ", err);
+        return null;
     }
     return validate(ast);
 }

@@ -1,11 +1,20 @@
+# dumbass little program
 function printMe(toPrint) {
     print(toPrint)
 }
 
-function sum(i, j) {
-    return i + j
+function printItems(items) {
+    if (items["first"] > items["second"]) {
+        printMe("bigger")
+    } else if (items["first"] < items["second"]) {
+        printMe("littler")
+    } else {
+        printMe("same")
+    }
+    printMe(items["second"])
 }
 
-k = 4
+# I am a comment
+k = 7 
 i = 7
-printMe(sum(k, i))
+printItems({first: k, second: i})

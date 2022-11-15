@@ -108,9 +108,8 @@ function executeFnCall(node) {
     // push new frame and set parameter values
     pushStackFrame(fnName, [], []);
     for (let i = 0; i < fnDef.params.length; i++) {
-        setVariable(fnDef.params[i], values[i]));
+        setVariable(fnDef.params[i], values[i]);
     }
-
 
     // run the code of the function definition
     executeCodeBlock(fnDef.body);
@@ -128,7 +127,7 @@ function executeWhileLoop(node) {
 
 function executeIfStatement(node) {
     if (evaluateExpression(node.condition)) {
-        executeCodeBlock(code.consequent);
+        executeCodeBlock(node.consequent);
     }
 
     // else clause can either be code block or another if statement (emulating elseif)
@@ -212,7 +211,7 @@ function evaluateExpression(node) {
 }
 
 function evaluateList(node) {
-    return node.items((map) => evaluateExpression(item));
+    return node.items.map((item) => evaluateExpression(item));
 }
 
 function evaluateDictionary(node) {
