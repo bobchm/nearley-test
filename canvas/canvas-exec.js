@@ -2,7 +2,7 @@ var globalStack = [];
 
 function execute(ast) {
     var svStack = stackTop();
-    pushStackFrame("_execute_", null, null);
+    pushStackFrame("_execute_", [], []);
 
     // ast should be a list of executable records
     for (let i = 0; i < ast.length; i++) {
@@ -79,8 +79,8 @@ function executeAssignment(node) {
 
 function executeFnCall(node) {
     // get function definition
-    var fnName = node.function_name.value;
-    var fnDef = getFunctionDef(fn_name, node);
+    var fnName = node.fn_name.value;
+    var fnDef = getFunctionDef(fnName, node);
 
     // make sure the number of function parameters match the number of expresions we have
     if (fnDef.params.length !== node.arguments.length) {
@@ -97,24 +97,24 @@ function executeFnCall(node) {
         for (let i = 0; i < node.arguments.length; i++) {
             args.push(evaluateExpression(node.arguments[i]));
         }
-        return fnDef.builtInFn.apply(args);
+        return fnDef.builtInFn.apply(null, args);
     }
 
-    // push new frame
-    pushStackFrame(fnName, null, null);
+    var values = [];
     for (let i = 0; i < fnDef.params.length; i++) {
-        setVariable(fnDef.params[i], evaluateExpression(node.arguments[i]));
+        values[i] = evaluateExpression(node.arguments[i]);
     }
+
+    // push new frame and set parameter values
+    pushStackFrame(fnName, [], []);
+    for (let i = 0; i < fnDef.params.length; i++) {
+        setVariable(fnDef.params[i], values[i]));
+    }
+
 
     // run the code of the function definition
-    var returnValue = null;
-    for (let i = 0; i < fnDef.body.length; i++) {
-        executeStatement(fnDef.body[i]);
-        if (stackTop().returnFlag) {
-            returnValue = stackTop().returnValue;
-            break;
-        }
-    }
+    executeCodeBlock(fnDef.body);
+    var returnValue = stackTop().returnFlag ? stackTop().returnValue : null;
     popStackFrame();
     return returnValue;
 }
@@ -259,6 +259,9 @@ function evaluateBinaryOp(op, left, right, node) {
 }
 
 function pushStackFrame(name, fns, vars) {
+    if (!Array.isArray(fns) || !Array.isArray(vars)) {
+        throw executionError("Non-array arguments to pushStackFrame", null);
+    }
     globalStack.push({
         name: name,
         fns: fns,
@@ -314,7 +317,7 @@ function getFunctionDef(name, node) {
     for (let i = globalStack.length - 1; i >= 0; i--) {
         var fn = globalStack[i].fns[name];
         if (fn) {
-            return fn.def;
+            return fn;
         }
     }
     throw executionError(`Unknown variable: ${name}`, node);
@@ -335,10 +338,10 @@ function addBuiltInFunction(fnDef) {
 
 function addFnDefToStackFrame(name, params, isBuiltIn, body, builtInFn, node) {
     var frame = stackTop();
-    if (stackTop.fns[name]) {
+    if (frame.fns[name]) {
         throw executionError(`Duplicate function definition (${name})`, node);
     }
-    stackTop.fns[name] = {
+    frame.fns[name] = {
         params: params,
         isBuiltIn: isBuiltIn,
         body: body,

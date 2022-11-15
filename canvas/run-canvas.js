@@ -27,6 +27,10 @@ function loadSource(fileName) {
     return source;
 }
 
+function validate(ast) {
+    return ast.filter((node) => node);
+}
+
 function parseCanvas(source) {
     var ast = null;
     try {
@@ -36,14 +40,14 @@ function parseCanvas(source) {
     } catch (err) {
         console.error("Parse error: ", err);
     }
-    return ast;
+    return validate(ast);
 }
 
 function runCanvas(ast) {
     console.log(JSON.stringify(ast, undefined, 2));
 
     // push a stack frame for built-in functions
-    pushStackFrame("_base)", null, null);
+    pushStackFrame("_base_", [], []);
     for (let i = 0; i < builtInFunctions.length; i++) {
         addBuiltInFunction(builtInFunctions[i]);
     }

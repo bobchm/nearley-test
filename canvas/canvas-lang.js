@@ -1,6 +1,7 @@
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 import moo from "moo";
+
 function id(x) {
     return x[0];
 }
@@ -40,7 +41,7 @@ const lexer = moo.compile({
         value: (s) => Number(s),
     },
     identifier: {
-        match: /[a-z_][a-z_0-9]*/,
+        match: /[a-zA-Z_][a-zA-Z_0-9]*/,
         type: moo.keywords({
             function: "function",
             while: "while",
@@ -125,8 +126,8 @@ var grammar = {
         },
         {
             name: "top_level_statement",
-            symbols: ["executable_statements"],
-            postprocess: (d) => d[0][0],
+            symbols: ["executable_statement"],
+            postprocess: id,
         },
         {
             name: "top_level_statement",

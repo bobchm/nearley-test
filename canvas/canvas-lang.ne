@@ -36,7 +36,7 @@ const lexer = moo.compile({
         value: s => Number(s)
     },
     identifier: {
-        match: /[a-z_][a-z_0-9]*/,
+        match: /[a-zA-Z_][a-zA-Z_0-9]*/,
         type: moo.keywords({
             function: "function",
             while: "while",
@@ -115,7 +115,7 @@ top_level_statements
 
 top_level_statement
     -> function_definition   {% id %}
-    |  executable_statements {% d => d[0][0] %}
+    |  executable_statement {% id %}
     |  line_comment     {% id %}
 
 function_definition
