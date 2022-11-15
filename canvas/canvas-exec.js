@@ -33,7 +33,6 @@ function executeTopLevel(node) {
             break;
         case "return_statement":
             throw executionError("Return statement at top level", node);
-            break;
         default:
             executeStatement(node);
     }
@@ -176,7 +175,88 @@ function executeReturnStatement(node) {
     stackTop().returnFlag = true;
 }
 
-function evaluateExpression(node) {}
+function evaluateExpression(node) {
+    switch (node.type) {
+        case "string_literal":
+            return node.value;
+        case "number_literal":
+            return node.value;
+        case "boolean_literal":
+            return node.value;
+        case "list_literal":
+            return evaluateList(node);
+        case "dictionary_literal":
+            return evaluateDictionary(node);
+        case "binary_operation":
+            var left = evaluateExpression(node.left);
+            var right = evaluateExpression(node.right);
+            return evaluateBinaryOp(node.operator.value, left, right, node);
+        case "var_reference":
+            return getVariableValue(node.var_name.value, node);
+        case "call_expression":
+            return executeFnCall(node);
+        case "indexed_access":
+            var subject = evaluateExpression(node.subject);
+            var index = evaluateExpression(node.index);
+            try {
+                return subject[index];
+            } catch (err) {
+                throw executionError("Error accessing index value", node);
+            }
+        case "function_expression":
+            defineFunction(node);
+            break;
+        default:
+            throw executionError(`Unknown AST node type (${node.type})`, node);
+    }
+}
+
+function evaluateList(node) {
+    return node.items((map) => evaluateExpression(item));
+}
+
+function evaluateDictionary(node) {
+    var val = {};
+    for (let i = 0; i < node.entries.length; i++) {
+        var entry = node.entries[i];
+        val[entry[0].value] = evaluateExpression(entry[1]);
+    }
+    return val;
+}
+
+function evaluateBinaryOp(op, left, right, node) {
+    try {
+        switch (op) {
+            case ">":
+                return left > right;
+            case ">=":
+                return left >= right;
+            case "<":
+                return left < right;
+            case "<=":
+                return left <= right;
+            case "==":
+                return left === right;
+            case "+":
+                return left + right;
+            case "-":
+                return left - right;
+            case "*":
+                return left * right;
+            case "/":
+                return left / right;
+            case "%":
+                return left % right;
+            case "or":
+                return left || right;
+            case "and":
+                return left && right;
+        }
+    } catch (err) {
+        throw executionError(err, node);
+    }
+    return false;
+}
 
 function pushStackFrame(name, fns, vars) {
     globalStack.push({
@@ -214,7 +294,7 @@ function addStackFrame(frame) {
 
 function getVariableValue(name, node) {
     for (let i = globalStack.length - 1; i >= 0; i--) {
-        if (globalStack[i].vars.hasOwnProperty(name)) {
+        if (globalStack[i].vars.hasOwnProperty(name))
             return globalStack[i].vars[name];
     }
     throw executionError(`Undefined variable: ${name}`, node);
