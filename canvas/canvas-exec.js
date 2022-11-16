@@ -1,4 +1,17 @@
+import nearley from "nearley";
+import grammar from "./canvas-lang.js";
+
 var globalStack = [];
+
+function parse(source) {
+    var parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+    parser.feed(source);
+    return parser.results[0];
+}
+
+function simplify(ast) {
+    return ast;
+}
 
 function execute(ast) {
     var svStack = stackTop();
@@ -392,4 +405,11 @@ function addFnDefToStackFrame(
     };
 }
 
-export { pushStackFrame, addStackFrame, addBuiltInFunction, execute };
+export {
+    pushStackFrame,
+    addStackFrame,
+    addBuiltInFunction,
+    parse,
+    simplify,
+    execute,
+};
