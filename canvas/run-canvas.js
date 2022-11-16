@@ -3,7 +3,15 @@ import nearley from "nearley";
 import grammar from "./canvas-lang.js";
 import { pushStackFrame, addBuiltInFunction, execute } from "./canvas-exec.js";
 
-var builtInFunctions = [{ name: "print", function: printCanvas, nParams: 1 }];
+var builtInFunctions = [
+    {
+        name: "print",
+        function: printCanvas,
+        parameters: [{ type: "none", value: "output" }],
+        category: "printing",
+        description: "low-level printing function",
+    },
+];
 
 function printCanvas(output) {
     console.log(output);

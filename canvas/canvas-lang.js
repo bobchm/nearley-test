@@ -32,6 +32,14 @@ const lexer = moo.compile({
         match: /#[^\n]*/,
         value: (s) => s.substring(1),
     },
+    description: {
+        match: /@description[^\n]*/,
+        value: (s) => s.substring(12).trim(),
+    },
+    category: {
+        match: /@category[^\n]*/,
+        value: (s) => s.substring(9).trim(),
+    },
     string_literal: {
         match: /"(?:[^\n\\"]|\\["\\ntbfr])*"/,
         value: (s) => JSON.parse(s),
@@ -161,19 +169,35 @@ var grammar = {
         { name: "parameter_list", symbols: [], postprocess: () => [] },
         {
             name: "parameter_list",
-            symbols: ["identifier"],
+            symbols: ["parameter"],
             postprocess: (d) => [d[0]],
         },
         {
             name: "parameter_list",
             symbols: [
-                "identifier",
+                "parameter",
                 "_",
                 { literal: "," },
                 "_",
                 "parameter_list",
             ],
             postprocess: (d) => [d[0], ...d[4]],
+        },
+        {
+            name: "parameter",
+            symbols: ["identifier"],
+            postprocess: (d) => ({
+                value: d[0].value,
+                type: "none",
+            }),
+        },
+        {
+            name: "parameter",
+            symbols: ["identifier", "_", { literal: ":" }, "_", "identifier"],
+            postprocess: (d) => ({
+                value: d[0].value,
+                type: d[4].value,
+            }),
         },
         {
             name: "code_block",
@@ -233,6 +257,16 @@ var grammar = {
         {
             name: "executable_statement",
             symbols: ["line_comment"],
+            postprocess: id,
+        },
+        {
+            name: "executable_statement",
+            symbols: ["line_category"],
+            postprocess: id,
+        },
+        {
+            name: "executable_statement",
+            symbols: ["line_description"],
             postprocess: id,
         },
         {
@@ -750,6 +784,20 @@ var grammar = {
         {
             name: "line_comment",
             symbols: [lexer.has("comment") ? { type: "comment" } : comment],
+            postprocess: convertTokenId,
+        },
+        {
+            name: "line_category",
+            symbols: [lexer.has("category") ? { type: "category" } : category],
+            postprocess: convertTokenId,
+        },
+        {
+            name: "line_description",
+            symbols: [
+                lexer.has("description")
+                    ? { type: "description" }
+                    : description,
+            ],
             postprocess: convertTokenId,
         },
         {

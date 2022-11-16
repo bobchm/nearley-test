@@ -27,6 +27,14 @@ const lexer = moo.compile({
         match: /#[^\n]*/,
         value: s => s.substring(1)
     },
+    description: {
+        match: /@description[^\n]*/,
+        value: s => s.substring(12).trim()
+    },
+    category: {
+        match: /@category[^\n]*/,
+        value: s => s.substring(9).trim()
+    },
     string_literal: {
         match: /"(?:[^\n\\"]|\\["\\ntbfr])*"/,
         value: s => JSON.parse(s)
@@ -133,10 +141,26 @@ function_definition
 
 parameter_list
     -> null        {% () => [] %}
-    | identifier   {% d => [d[0]] %}
-    | identifier _ "," _ parameter_list
+    | parameter   {% d => [d[0]] %}
+    | parameter _ "," _ parameter_list
         {%
             d => [d[0], ...d[4]]
+        %}
+
+parameter
+    -> identifier   
+        {% 
+            d => ({
+                value: d[0].value,
+                type: "none"
+            })
+        %}
+    |  identifier _ ":" _ identifier
+        {%
+            d => ({
+                value: d[0].value,
+                type: d[4].value
+            })
         %}
 
 code_block -> "{" executable_statements "}"
@@ -166,6 +190,8 @@ executable_statement
    |  var_assignment       {% id %}
    |  call_statement       {% id %}
    |  line_comment         {% id %}
+   |  line_category         {% id %}
+   |  line_description         {% id %}
    |  indexed_assignment   {% id %}
    |  while_loop           {% id %}
    |  if_statement         {% id %}
@@ -479,6 +505,10 @@ function_expression
         %}
 
 line_comment -> %comment {% convertTokenId %}
+
+line_category -> %category {% convertTokenId %}
+
+line_description -> %description {% convertTokenId %}
 
 string_literal -> %string_literal {% convertTokenId %}
 

@@ -39,13 +39,14 @@ function executeTopLevel(node) {
 }
 
 function defineFunction(node) {
-    var params = node.parameters.map((p) => p.value);
-    setFunction(node.name.value, params, node.body, node);
+    setFunction(node.name.value, node.parameters, node.body, node);
 }
 
 function executeStatement(node) {
     switch (node.type) {
         case "comment":
+        case "description":
+        case "category":
             break;
         case "var_assignment":
             executeAssignment(node);
@@ -108,7 +109,7 @@ function executeFnCall(node) {
     // push new frame and set parameter values
     pushStackFrame(fnName, [], []);
     for (let i = 0; i < fnDef.params.length; i++) {
-        setVariable(fnDef.params[i], values[i]);
+        setVariable(fnDef.params[i].value, values[i]);
     }
 
     // run the code of the function definition
@@ -322,29 +323,72 @@ function getFunctionDef(name, node) {
     throw executionError(`Unknown variable: ${name}`, node);
 }
 
+function findFunctionAnnotation(body, atype) {
+    if (body.type === "code_block") {
+        for (let i = 0; i < body.statements.length; i++) {
+            if (body.statements[i].type === atype) {
+                return body.statements[i].value;
+            }
+        }
+    }
+    return null;
+}
+
 function setFunction(name, params, body, node) {
-    addFnDefToStackFrame(name, params, false, body, null, node);
+    var category = findFunctionAnnotation(body, "category");
+    var description = findFunctionAnnotation(body, "description");
+    addFnDefToStackFrame(
+        name,
+        params,
+        false,
+        body,
+        null,
+        category,
+        description,
+        node
+    );
 }
 
 function addBuiltInFunction(fnDef) {
-    // build fake parameters
-    var params = [];
-    for (let i = 0; i < fnDef.nParams; i++) {
-        params.push(`param${i}`);
-    }
-    addFnDefToStackFrame(fnDef.name, params, true, null, fnDef.function, null);
+    addFnDefToStackFrame(
+        fnDef.name,
+        fnDef.parameters,
+        true,
+        null,
+        fnDef.function,
+        fnDef.category,
+        fnDef.description,
+        null
+    );
 }
 
-function addFnDefToStackFrame(name, params, isBuiltIn, body, builtInFn, node) {
+function addFnDefToStackFrame(
+    name,
+    params,
+    isBuiltIn,
+    body,
+    builtInFn,
+    category,
+    description,
+    node
+) {
     var frame = stackTop();
     if (frame.fns[name]) {
         throw executionError(`Duplicate function definition (${name})`, node);
+    }
+    if (!Array.isArray(params)) {
+        throw executionError(
+            "Invalide parameter specification when adding function",
+            node
+        );
     }
     frame.fns[name] = {
         params: params,
         isBuiltIn: isBuiltIn,
         body: body,
         builtInFn: builtInFn,
+        category: category,
+        description: description,
     };
 }
 
