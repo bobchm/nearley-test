@@ -15,6 +15,6 @@ function printItems(items) {
 }
 
 # I am a comment
-k = 7 
-i = 7
+k = 7 @f
+i = 7 #dfasd
 printItems({first: k, second: i})

@@ -38,7 +38,13 @@ function parseCanvas(source) {
         parser.feed(source);
         ast = parser.results[0];
     } catch (err) {
-        console.error("Parse error: ", err);
+        // these error messages are a bit much - cut at the location
+        var msg = err.message;
+        var idx = msg.search(":\n");
+        if (idx > 0) {
+            msg = msg.slice(0, idx);
+        }
+        console.error("Parse error: ", msg);
         return null;
     }
     return validate(ast);
