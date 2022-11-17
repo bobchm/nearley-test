@@ -122,7 +122,7 @@ function executeFnCall(node) {
     // push new frame and set parameter values
     pushStackFrame(fnName, [], []);
     for (let i = 0; i < fnDef.params.length; i++) {
-        setVariable(fnDef.params[i].value, values[i]);
+        setVariable(fnDef.params[i].name, values[i]);
     }
 
     // run the code of the function definition

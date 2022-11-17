@@ -1,5 +1,4 @@
-# dumbass little program
-function printMe(toPrint) {
+     function printMe(toPrint) {
     print(toPrint)
 }
 

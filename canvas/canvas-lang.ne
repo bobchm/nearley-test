@@ -122,9 +122,9 @@ top_level_statements
         %}
 
 top_level_statement
-    -> function_definition   {% id %}
-    |  executable_statement {% id %}
-    |  line_comment     {% id %}
+    -> _ function_definition   {% d => d[1] %}
+    |  _ executable_statement {% d => d[1] %}
+    |  _ line_comment     {% d => d[1] %}
 
 function_definition
     -> "function" __ identifier _ "(" _ parameter_list _ ")" _ code_block
