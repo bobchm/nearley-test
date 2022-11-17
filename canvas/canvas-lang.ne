@@ -519,9 +519,9 @@ identifier -> %identifier {% convertTokenId %}
 _ml -> multi_line_ws_char:*
 
 multi_line_ws_char
-    -> %ws
+    -> " "
     |  "\n"
 
-__ -> %ws:+
+__ -> [ \t]:+
 
-_ -> %ws:*
+_ -> [ \t]:*

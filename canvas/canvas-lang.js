@@ -1,13 +1,11 @@
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 import moo from "moo";
-
 function id(x) {
     return x[0];
 }
 
 const lexer = moo.compile({
-    ws: /[ \t]+/,
     nl: { match: "\n", lineBreaks: true },
     lte: "<=",
     lt: "<",
@@ -834,15 +832,12 @@ var grammar = {
             },
         },
         { name: "_ml", symbols: ["_ml$ebnf$1"] },
-        {
-            name: "multi_line_ws_char",
-            symbols: [lexer.has("ws") ? { type: "ws" } : ws],
-        },
+        { name: "multi_line_ws_char", symbols: [{ literal: " " }] },
         { name: "multi_line_ws_char", symbols: [{ literal: "\n" }] },
-        { name: "__$ebnf$1", symbols: [lexer.has("ws") ? { type: "ws" } : ws] },
+        { name: "__$ebnf$1", symbols: [/[ \t]/] },
         {
             name: "__$ebnf$1",
-            symbols: ["__$ebnf$1", lexer.has("ws") ? { type: "ws" } : ws],
+            symbols: ["__$ebnf$1", /[ \t]/],
             postprocess: function arrpush(d) {
                 return d[0].concat([d[1]]);
             },
@@ -851,7 +846,7 @@ var grammar = {
         { name: "_$ebnf$1", symbols: [] },
         {
             name: "_$ebnf$1",
-            symbols: ["_$ebnf$1", lexer.has("ws") ? { type: "ws" } : ws],
+            symbols: ["_$ebnf$1", /[ \t]/],
             postprocess: function arrpush(d) {
                 return d[0].concat([d[1]]);
             },
